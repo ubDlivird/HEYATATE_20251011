@@ -39,7 +39,8 @@ struct CreateImageView: View {
     var body: some View {
         ZStack {
             Rectangle().foregroundColor(.orange)
-                .aspectRatio(16/9, contentMode: .fit)
+                .aspectRatio(16/9, contentMode: .fit) // アスペクト16:9
+                .cornerRadius(10) // 角の丸み
             VStack(alignment: .leading, spacing: 5) {
                 // 1列目
                 firstView()
@@ -57,7 +58,9 @@ struct CreateImageView: View {
                     thirdView3()
                     thirdView4()
                 }
-            }.padding().aspectRatio(16/9, contentMode: .fit)
+            }
+            .padding()
+            .aspectRatio(16/9, contentMode: .fit) // アスペクト16:9
         }
     }
     
@@ -65,10 +68,11 @@ struct CreateImageView: View {
     private func firstView() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.gray.opacity(0.5)) // 半透明
             // ゲーム名
             Text("#" + game)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+                .foregroundColor(Color.white)
             // タイトル
             Text(title)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading) // 中央
@@ -79,7 +83,7 @@ struct CreateImageView: View {
     private func secondView1() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("開催時間").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
@@ -95,39 +99,39 @@ struct CreateImageView: View {
     private func secondView2() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("募集人数").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 開始〜終了
-                Text("@" + number)
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
+            Text("@" + number)
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     
     private func secondView3() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("VC").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // VC
-                Text(vc)
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
+            Text(vc)
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     
     private func secondView4() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("実施場所").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 実施場所
-                Text(space)
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
+            Text(space)
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     
@@ -135,49 +139,49 @@ struct CreateImageView: View {
     private func thirdView1() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("連絡方法").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 連絡方法
-                Text(chat)
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
+            Text(chat)
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     private func thirdView2() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("現在レート").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 現在レート
-                Text(myRate)
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
+            Text(myRate)
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     private func thirdView3() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("募集レート").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 現在レート
-                Text(reqRate)
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
+            Text(reqRate)
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     private func thirdView4() -> some View{
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray)
+            Rectangle().foregroundColor(.white)
             // 見出し
             Text("その他").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // その他
-                Text(sonota1 + sonota2)
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
+            Text(sonota1 + sonota2)
+                .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     

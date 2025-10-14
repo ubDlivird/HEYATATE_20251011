@@ -19,14 +19,21 @@ struct ContentView: View {
         // TabViewで画面下部にメニューバーを作成
         TabView {
             
-            // 1. ホームタブ: ナビゲーションを内包し、部屋選択とチャット画面への遷移を管理
-            Text("home")
+            // フィード
+            Text("feed")
+                .tabItem { // MARK: TabItem: フィード
+                    // タブのアイコンとテキスト
+                    Label("フィード", systemImage: "person.fill")
+                }
+            
+            // 募集
+            RecruitView()
                 .tabItem { // MARK: TabItem: ホーム
                 // タブのアイコンとテキスト
-                Label("ホーム", systemImage: "house.fill")
+                Label("募集", systemImage: "house.fill")
             }
             
-            // 2. プロフィールタブ: 未実装のプレースホルダ
+            // プロフィール
             Text("home")
                 .tabItem { // MARK: TabItem: プロフィール
                     // タブのアイコンとテキスト
