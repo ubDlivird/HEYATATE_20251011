@@ -39,6 +39,13 @@ struct ContentView: View {
                     // タブのアイコンとテキスト
                     Label("プロフィール", systemImage: "person.fill")
                 }
+            
+            // 暫定
+            LoadMapView()
+                .tabItem { // MARK: TabItem: プロフィール
+                    // タブのアイコンとテキスト
+                    Label("ロードマップ", systemImage: "person.fill")
+                }
         }
     }
 }
