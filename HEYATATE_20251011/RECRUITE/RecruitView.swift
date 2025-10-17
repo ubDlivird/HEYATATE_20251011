@@ -9,17 +9,17 @@ import SwiftUI
 
 // 子ビューに受け渡し用
 struct RecruitData{
-    var game: Int = 1 // ゲーム選択を保持
+    var game: String = "" // ゲーム選択を保持
     var areas: [String] = [] // 実施場所を保持
-    var titles: String = "" // 募集タイトルを保持
+    var title: String = "" // 募集タイトルを保持
     var startDate = Date() // 開始時間を保持
     var endDate = Date() // 終了時間を保持
-    var people: Int = 3 // 募集人数を保持
+    var people: Int = 0 // 募集人数を保持
     var joins: [String] = [] // 参加方法を保持
     var vcs: [String] = [] // VC選択を保持
-    var nowRank: String = "選択" // 現在ランクを保持
+    var nowRank: String = "" // 現在ランクを保持
     var nowRate: String = "" // 現在レートを保持
-    var reqRank: String = "選択" // 募集ランクを保持
+    var reqRank: String = "" // 募集ランクを保持
     var reqRate: String = "" // 募集レートを保持
     var modes: [String] = [] // 選択されたモードを保持
     var tags: [String] = [] // 選択されたタグを保持
@@ -80,9 +80,9 @@ struct RecruitView: View {
     @ViewBuilder private func gameForm() -> some View {
         Picker("ゲームを選択", selection: $recruitData.game) {
             // 選択項目の一覧を生成
-            Text("スプラトゥーン3").tag(1)
-            Text("ぶどう").tag(2)
-            Text("りんご").tag(3)
+            Text("スプラトゥーン3").tag("スプラトゥーン3")
+            Text("ぶどう").tag("ぶどう")
+            Text("りんご").tag("りんご")
         }
     }
     
@@ -90,12 +90,12 @@ struct RecruitView: View {
     @ViewBuilder private func titleForm() -> some View { // タイトル入力フォームを構築
         HStack {
             Text("題名：") // 題名のラベル
-            TextField("サモラン募集伝説400から", text: $recruitData.titles)
-                .onChange(of: recruitData.titles) {
+            TextField("サモラン募集伝説400から", text: $recruitData.title)
+                .onChange(of: recruitData.title) {
                     // 文字数制限を超過した場合の処理
-                    if recruitData.titles.count > 15 { // 文字数制限
+                    if recruitData.title.count > 15 { // 文字数制限
                         // 文字列を先頭から定数で切り詰める
-                        recruitData.titles = String(recruitData.titles.prefix(15))
+                        recruitData.title = String(recruitData.title.prefix(15))
                     }
                 }
         }
@@ -138,8 +138,8 @@ struct RecruitView: View {
                 Text("S+").tag("S+")
                 Text("S").tag("S")
                 Text("~A").tag("~A")
-                Text("でんせつ").tag("でんせつ")
-                Text("たつじん").tag("たつじん")
+                Text("伝説").tag("伝説")
+                Text("達人").tag("達人")
             }
             TextField("400", text: $recruitData.nowRate).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }
@@ -152,8 +152,8 @@ struct RecruitView: View {
                 Text("S+").tag("S+")
                 Text("S").tag("S")
                 Text("~A").tag("~A")
-                Text("でんせつ").tag("でんせつ")
-                Text("たつじん").tag("たつじん")
+                Text("伝説").tag("伝説")
+                Text("達人").tag("達人")
             }
             TextField("400", text: $recruitData.reqRate).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }

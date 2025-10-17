@@ -13,31 +13,8 @@ struct CreateImageView: View {
     // 親ビューからの選択変数リスト
     @Binding var recruitData : RecruitData
     
-    //変数
-    private let paddingPx: CGFloat = 1
-    
-    // タイトル
-    private let game: String = "スプラトゥーン3"
-    private let title: String = "あいうえおかきくけこさしすせそ"
-    // 開催時間
-    private let startHHmm: String = "16:00"
-    private let endHHmm: String = "18:00"
-    // 募集人数
-    private let number: String = "3"
-    // ボイスチャット
-    private let vc: String = "あり"
-    // 実施場所
-    private let space: String = "スペース"
-    // 連絡方法
-    private let chat: String = "返信"
-    // 現在レート
-    private let myRate: String = "800"
-    // 募集レート
-    private let reqRate: String = "無制限"
-    // その他タグ
-    private let sonota1: String = "#飲酒中"
-    private let sonota2: String = "FF外歓迎"
-    
+    //題名の余白
+    private let paddingPx: CGFloat = 2
     
     var body: some View {
         ZStack {
@@ -49,17 +26,17 @@ struct CreateImageView: View {
                 firstView()
                 // 2列目
                 HStack {
-                    secondView1()
-                    secondView2()
-                    secondView3()
-                    secondView4()
+                    timeView() // 時間
+                    peopleView() // 人数
+                    vcView() // VC
+                    areaView() // 場所
                 }
                 // 3列目
                 HStack {
-                    thirdView1()
-                    thirdView2()
-                    thirdView3()
-                    thirdView4()
+                    joinView1() // 連絡方法
+                    nowView2() // 現在レート
+                    reqView() // 募集レート
+                    tagView() // その他
                 }
             }
             .padding()
@@ -73,11 +50,11 @@ struct CreateImageView: View {
             // 背景
             Rectangle().foregroundColor(.gray.opacity(0.5)) // 半透明
             // ゲーム名
-            Text("#" + game)
+            Text("#" + recruitData.game)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .foregroundColor(Color.white)
             // タイトル
-            Text(title)
+            Text(recruitData.title)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading) // 中央
                 .font(.largeTitle)
                 .minimumScaleFactor(0.01)
@@ -85,7 +62,7 @@ struct CreateImageView: View {
     }
     
     //2列目実装
-    private func secondView1() -> some View{
+    private func timeView() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
@@ -94,14 +71,19 @@ struct CreateImageView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 開始〜終了
             VStack {
-                Text(startHHmm + "　")
-                Text("〜" + endHHmm)
+                Text(recruitData.startDate, style: .time)
+                    .frame(alignment: .leading) // 左寄せ
+                HStack(spacing: 0) {
+                    Spacer()
+                    Text("〜")
+                    Text(recruitData.endDate, style: .time)
+                }.padding([.trailing], 8) // 右余白
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     
-    private func secondView2() -> some View{
+    private func peopleView() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
@@ -109,12 +91,12 @@ struct CreateImageView: View {
             Text("募集人数").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 開始〜終了
-            Text("@" + number)
+            Text("@" + "\(recruitData.people)")
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     
-    private func secondView3() -> some View{
+    private func vcView() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
@@ -122,12 +104,12 @@ struct CreateImageView: View {
             Text("VC").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // VC
-            Text(vc)
+            Text(recruitData.vcs.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     
-    private func secondView4() -> some View{
+    private func areaView() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
@@ -135,13 +117,13 @@ struct CreateImageView: View {
             Text("実施場所").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 実施場所
-            Text(space)
+            Text(recruitData.areas.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
     
     //3列目実装
-    private func thirdView1() -> some View{
+    private func joinView1() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
@@ -149,23 +131,22 @@ struct CreateImageView: View {
             Text("連絡方法").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 連絡方法
-            Text(chat)
+            Text(recruitData.joins.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
-    private func thirdView2() -> some View{
+    private func nowView2() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
             // 見出し
             Text("現在レート").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            // 現在レート
-            Text(myRate)
+            Text("\(recruitData.nowRank)" + "\(recruitData.nowRate)")
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
-    private func thirdView3() -> some View{
+    private func reqView() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
@@ -173,11 +154,11 @@ struct CreateImageView: View {
             Text("募集レート").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // 現在レート
-            Text(reqRate)
+            Text("\(recruitData.reqRank)" + "\(recruitData.reqRate)")
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
-    private func thirdView4() -> some View{
+    private func tagView() -> some View{
         ZStack {
             // 背景
             Rectangle().foregroundColor(.white)
@@ -185,7 +166,7 @@ struct CreateImageView: View {
             Text("その他").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             // その他
-            Text(sonota1 + sonota2)
+            Text(recruitData.tags.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
         }
     }
