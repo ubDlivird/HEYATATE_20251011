@@ -11,6 +11,7 @@ struct RecruitView: View {
     
     @State private var selectedGame: Int = 1 // ゲーム選択用変数
     @State private var gameMode: Int = 1 // ゲーム選択用変数
+    
     @State private var recruitTitle: String = "" // 募集タイトル
     @State private var startDate = Date() // 時間選択用変数
     @State private var endDate = Date() // 時間選択用変数
@@ -18,24 +19,37 @@ struct RecruitView: View {
     @State private var isSamorun: Bool = false // サモラン選択状態
     @State private var isPrivate: Bool = false // プラベ選択状態
     @State private var people: Int = 4 // 募集人数
-    @State private var isSpace: Bool = false // 実施：スペース
-    @State private var isDiscord: Bool = false // 実施：ディスコード
-    @State private var isGamee: Bool = false // 実施：gamee
-    @State private var isAlterna: Bool = false // 実施：オルタナ
-    @State private var isRepX: Bool = false // 返信：返信(X)
-    @State private var isRepChat: Bool = false // 返信：返信(チャット)
-    @State private var isSpDirect: Bool = false // 返信：スペース直
-    @State private var vcOK: Bool = false // VCあり
-    @State private var vcNG: Bool = false // VCなし
-    @State private var vcEither: Bool = false // VCどちらでも
-    @State private var samoUdemaeNow: String = "" // サモラン腕前(現在)
-    @State private var samoLateNow: Int = 1 // サモランレート(現在)
-    @State private var samoUdemaeReq: String = "" // サモラン腕前(募集)
-    @State private var samoLateReq: Int = 1 // サモラン実力(募集)
-    @State private var openUdemaeNow: String = "" // オープン腕前(現在)
-    @State private var openLateNow: Int = 16 // オープンレート(現在)
-    @State private var openUdemaeReq: String = "" // オープン腕前(募集)
-    @State private var openLateReq: Int = 18 // オープンレート(募集)
+    
+    // 実施場所
+    @State private var selectedAreas: [String] = [] // 選択されたモードを保持するリスト
+    private let areaList1: [String] = ["スペース", "Discord","公式Discord"]
+    
+    // 参加方法
+    @State private var selectedJoins: [String] = [] // 選択されたモードを保持するリスト
+    private let joinList1: [String] = ["返信(X)", "チャット", "スペース直"]
+    
+    // VC
+    @State private var selectedVCs: [String] = [] // 選択されたモードを保持するリスト
+    private var vcList1: [String] = ["あり", "なし", "どちらでも"]
+    
+    
+    @State private var udemaeNow: String = "選択" // 腕前(現在)
+    @State private var lateNow: String = "" // レート(現在)
+    @State private var udemaeReq: String = "選択" // 腕前(募集)
+    @State private var lateReq: String = "" // 実力(募集)
+    
+    // モード選択
+    @State private var selectedModes: [String] = [] // 選択されたモードを保持するリスト
+    private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
+    
+    // その他タグ
+    @State private var selectedTags: [String] = [] // 選択されたタグを保持するリスト
+    private let tagList1: [String] = ["#エンジョイ", "#ガチ", "#レート上げ"]
+    private let tagList2: [String] = ["#ゆる募", "#クリア重視", "初心者です"]
+    private let tagList3: [String] = ["#社会人", "#成人", "#学生", "#🔰歓迎"]
+    private let tagList4: [String] = ["#身内のみ", "#FF外歓迎", "#カンスト"]
+    private let tagList5: [String] = ["#途中抜け⭕️","#休憩あり","#飲酒中"]
+    private let tagList6: [String] = ["#聞き専⭕️", "#聞き専❌","#不穏❌"]
     
     
     var body: some View {
@@ -48,12 +62,14 @@ struct RecruitView: View {
                 titleForm() // 題名
                 modeForm() // モード
                 peopleForm() // 人数
+                vcForm() // VC有無
                 areaForm() // 実施場所
                 joinForm() // 参加方法
                 nowRateForm() // 現在レート
                 reqRateForm() // 募集レート
                 timeForm() // 時間選択
-                vcForm() // VC有無
+                tagForm() // その他タグ
+                
             }
             Spacer()
             Text("Xに投稿、スペースを開く、募集ボタン")
@@ -74,84 +90,65 @@ struct RecruitView: View {
     @ViewBuilder private func titleForm() -> some View { // 新規追加
         HStack {
             Text("題名：")
-            TextField("募集タイトルを入力してください", text: $recruitTitle)
+            TextField("みんな大好きガチアサリ", text: $recruitTitle)
         }
     }
     
     // モード選択
     @ViewBuilder private func modeForm() -> some View {
-        VStack{
+        VStack(alignment: .leading, spacing: 5){
             Text("モード選択").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            HStack { // 新規追加
-                Toggle("オープン", isOn: $isOpen)    .toggleStyle(.button)
-                Toggle("サモラン", isOn: $isSamorun)
-                    .toggleStyle(.button)
-                Toggle("プラベ", isOn: $isPrivate)
-                    .toggleStyle(.button)
-            }
+            TagSelectionRow(
+                rowTags: modeList1,selectedTags: $selectedModes
+            ).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // 中央
         }
     }
     
     // 実施場所
     @ViewBuilder private func areaForm() -> some View {
-        VStack{
+        VStack(alignment: .leading, spacing: 5){
             Text("実施場所").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            VStack{
-                HStack {
-                    Toggle("スペース", isOn: $isSpace).toggleStyle(.button)
-                    Toggle("Discord", isOn: $isDiscord).toggleStyle(.button)
-                }
-                HStack {
-                    Toggle("gamee", isOn: $isGamee).toggleStyle(.button)
-                    Toggle("オルタナ", isOn: $isAlterna).toggleStyle(.button)
-                }
-            }
+            TagSelectionRow(
+                rowTags: areaList1,selectedTags: $selectedAreas
+            )
         }
     }
     
     // 参加方法
     @ViewBuilder private func joinForm() -> some View {
-        VStack{
+        VStack(alignment: .leading, spacing: 5){
             Text("参加方法").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            HStack {
-                Toggle("返信(X)", isOn: $isRepX).toggleStyle(.button)
-                Toggle("返信(チャット)", isOn: $isRepChat).toggleStyle(.button)
-                Toggle("スペース直", isOn: $isSpDirect).toggleStyle(.button)
-                
-            }
+            TagSelectionRow(
+                rowTags: joinList1,selectedTags: $selectedJoins
+            )
         }
     }
     
     // 現在レート
     @ViewBuilder private func nowRateForm() -> some View {
         HStack{
-            Picker("ウデマエ", selection: $selectedGame) {
-                Text("X").tag(1)
-                Text("S+").tag(2)
-                Text("S").tag(3)
-                Text("A").tag(3)
-                Text("B").tag(3)
-                Text("C").tag(3)
+            Picker("ウデマエ", selection: $udemaeNow) {
+                Text("S+").tag("S+")
+                Text("S").tag("S")
+                Text("~A").tag("~A")
+                Text("でんせつ").tag("でんせつ")
+                Text("たつじん").tag("たつじん")
             }
-            Picker("レート", selection: $selectedGame) {
-                ForEach(16..<30) { number in // 新規追加: 募集人数をリストとして生成
-                    Text("\(number) 人").tag(number) // \(number) 人
-                }
-            }
+            TextField("400", text: $lateNow).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }
-        
     }
     
     // 募集レート
     @ViewBuilder private func reqRateForm() -> some View {
-        VStack{
-            Text("募集レート").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            HStack { // 新規追加
-                Toggle("A", isOn: $isOpen).toggleStyle(.button)
-                Toggle("B", isOn: $isSamorun).toggleStyle(.button)
-                Toggle("C", isOn: $isPrivate).toggleStyle(.button)
-                Toggle("無制限", isOn: $isPrivate).toggleStyle(.button)
+        HStack{
+            Picker("募集条件", selection: $udemaeReq) {
+                Text("S+").tag("S+")
+                Text("S").tag("S")
+                Text("~A").tag("~A")
+                Text("でんせつ").tag("でんせつ")
+                Text("たつじん").tag("たつじん")
             }
+            TextField("400", text: $lateNow).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }
     }
     
@@ -165,29 +162,93 @@ struct RecruitView: View {
     }
     
     // VC選択
-    @ViewBuilder private func vcForm() -> some View { // 改修箇所
-        VStack{
+    // その他タグ
+    @ViewBuilder private func vcForm() -> some View {
+        VStack(alignment: .leading, spacing: 5){
             Text("ボイスチャット").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            HStack {
-                Toggle("あり", isOn: $vcOK).toggleStyle(.button)
-                Toggle("なし", isOn: $vcNG) .toggleStyle(.button)
-                Toggle("どちらでも", isOn: $vcEither).toggleStyle(.button)
-            }
+            TagSelectionRow(
+                rowTags: vcList1, selectedTags: $selectedVCs
+            )
         }
     }
     
     // 時間選択
     @ViewBuilder private func timeForm() -> some View {
         DatePicker(
-            "開始日時",
+            "開始時間",
             selection: $startDate,
-            displayedComponents: [.date, .hourAndMinute]
-        )
-        .datePickerStyle(.compact)
-        DatePicker("終了日時", selection: $endDate)
-            .datePickerStyle(.compact)
+            displayedComponents: [.hourAndMinute]
+        ).datePickerStyle(.compact)
+        DatePicker(
+            "終了時間",
+            selection: $endDate,
+            displayedComponents: [.hourAndMinute]
+        ).datePickerStyle(.compact)
     }
     
+    // その他タグ
+    @ViewBuilder private func tagForm() -> some View {
+        VStack(alignment: .leading, spacing: 5){
+            Text("その他タグ").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+            TagSelectionRow(
+                rowTags: tagList1,selectedTags: $selectedTags
+            )
+            TagSelectionRow(
+                rowTags: tagList2,selectedTags: $selectedTags
+            )
+            TagSelectionRow(
+                rowTags: tagList3,selectedTags: $selectedTags
+            )
+            TagSelectionRow(
+                rowTags: tagList4,selectedTags: $selectedTags
+            )
+            TagSelectionRow(
+                rowTags: tagList5,selectedTags: $selectedTags
+            )
+            TagSelectionRow(
+                rowTags: tagList6,selectedTags: $selectedTags
+            )
+        }
+    }
+    
+    // 1行分の横並びの選択肢を表示し、選択状態をBindingで親と共有するビュー // 新規追加
+    // RecruitView構造体の直下に定義を移動
+    struct TagSelectionRow: View {
+        let rowTags: [String]
+        @Binding var selectedTags: [String]
+        
+        var body: some View {
+            HStack(spacing: 10) { // スペーシングを調整
+                ForEach(rowTags, id: \.self) { tag in
+                    tagButton(for: tag)
+                }
+                Spacer()
+            }
+        }
+        
+        private func tagButton(for tag: String) -> some View {
+            HStack {
+                Text(tag)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(selectedTags.contains(tag) ? Color.blue : Color(.systemGray5))
+            .foregroundColor(selectedTags.contains(tag) ? .white : .primary)
+            .cornerRadius(20)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                toggleSelection(for: tag)
+            }
+        }
+        
+        private func toggleSelection(for tag: String) {
+            if let index = selectedTags.firstIndex(of: tag) {
+                selectedTags.remove(at: index)
+            } else {
+                selectedTags.append(tag)
+            }
+        }
+    }
 }
 
 #Preview {

@@ -15,7 +15,7 @@ struct CreateImageView: View {
     
     // タイトル
     private let game: String = "スプラトゥーン3"
-    private let title: String = "みんな大好きガチアサリ"
+    private let title: String = "ああああいいいいううううええええ"
     // 開催時間
     private let startHHmm: String = "16:00"
     private let endHHmm: String = "18:00"
@@ -76,6 +76,11 @@ struct CreateImageView: View {
             // タイトル
             Text(title)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading) // 中央
+                .font(.largeTitle) // 大きい文字
+                .lineLimit(1) // 改行しない
+                .minimumScaleFactor(0.001) // 最小倍率
+                .layoutPriority(1) // レイアウト優先度を高く設定し、領域を優先的に確保
+                .padding(.horizontal, 8) //extの描画領域を明確にする
         }
     }
     
