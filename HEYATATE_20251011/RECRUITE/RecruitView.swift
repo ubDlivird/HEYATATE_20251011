@@ -90,7 +90,14 @@ struct RecruitView: View {
     @ViewBuilder private func titleForm() -> some View { // 新規追加
         HStack {
             Text("題名：")
-            TextField("みんな大好きガチアサリ", text: $recruitTitle)
+            TextField("タイトル入力(15文字まで)", text: $recruitTitle)
+                .onChange(of: recruitTitle) {
+                    // 15文字を超えた場合に超過分をトリミングする処理
+                    if recruitTitle.count > 15 {
+                        // 文字列を先頭からtitleCharacterLimit文字で切り詰める
+                        recruitTitle = String(recruitTitle.prefix(15))
+                    }
+                }
         }
     }
     
