@@ -22,28 +22,24 @@ struct ContentView: View {
             // フィード
             Text("feed")
                 .tabItem { // MARK: TabItem: フィード
-                    // タブのアイコンとテキスト
                     Label("フィード", systemImage: "person.fill")
                 }
             
             // 募集
             RecruitView()
                 .tabItem { // MARK: TabItem: ホーム
-                // タブのアイコンとテキスト
                 Label("募集", systemImage: "house.fill")
             }
             
             // プロフィール
             Text("home")
                 .tabItem { // MARK: TabItem: プロフィール
-                    // タブのアイコンとテキスト
                     Label("プロフィール", systemImage: "person.fill")
                 }
             
             // 暫定
             LoadMapView()
                 .tabItem { // MARK: TabItem: プロフィール
-                    // タブのアイコンとテキスト
                     Label("ロードマップ", systemImage: "person.fill")
                 }
         }

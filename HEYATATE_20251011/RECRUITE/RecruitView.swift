@@ -30,14 +30,14 @@ struct RecruitView: View {
     // 子ビューに受け渡し用
     @State private var recruitData = RecruitData()
     
+    // モード選択
+    private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
     // 実施場所
     private let areaList1: [String] = ["スペース", "Discord","公式Discord"]
     // 参加方法
     private let joinList1: [String] = ["返信(X)", "チャット", "スペース直"]
     // VC
     private var vcList1: [String] = ["あり", "なし", "どちらでも"]
-    // モード選択
-    private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
     // その他タグ
     private let tagList1: [String] = ["#エンジョイ", "#ガチ", "#レート上げ"]
     private let tagList2: [String] = ["#ゆる募", "#クリア重視", "初心者です"]
@@ -54,8 +54,8 @@ struct RecruitView: View {
             Text("募集事項")
             Form{
                 gameForm() // ゲーム
-                titleForm() // 題名
                 modeForm() // モード
+                titleForm() // 題名
                 peopleForm() // 人数
                 vcForm() // VC有無
                 areaForm() // 実施場所
@@ -64,7 +64,6 @@ struct RecruitView: View {
                 reqRateForm() // 募集レート
                 timeForm() // 時間選択
                 tagForm() // その他タグ
-                
             }
             Spacer()
             Text("Xに投稿、スペースを開く、募集ボタン")
@@ -80,9 +79,19 @@ struct RecruitView: View {
     @ViewBuilder private func gameForm() -> some View {
         Picker("ゲームを選択", selection: $recruitData.game) {
             // 選択項目の一覧を生成
-            Text("スプラトゥーン3").tag("スプラトゥーン3")
-            Text("ぶどう").tag("ぶどう")
-            Text("りんご").tag("りんご")
+            Text("スプラトゥーン3").tag("#スプラトゥーン3")
+            Text("ぶどう").tag("#ぶどう")
+            Text("りんご").tag("#りんご")
+        }
+    }
+    
+    // モード選択
+    @ViewBuilder private func modeForm() -> some View {
+        VStack(alignment: .leading, spacing: 5){
+            Text("モード選択").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+            TagSelectionRow(
+                rowTags: modeList1,selectedTags: $recruitData.modes
+            ).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // 中央
         }
     }
     
@@ -100,21 +109,12 @@ struct RecruitView: View {
                 }
         }
     }
-    
-    // モード選択
-    @ViewBuilder private func modeForm() -> some View {
-        VStack(alignment: .leading, spacing: 5){
-            Text("現在レート").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            TagSelectionRow(
-                rowTags: modeList1,selectedTags: $recruitData.modes
-            ).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // 中央
-        }
-    }
+
     
     // 実施場所
     @ViewBuilder private func areaForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
-            Text("募集レート").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+            Text("実施場所").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             TagSelectionRow(
                 rowTags: areaList1,selectedTags: $recruitData.areas
             )
@@ -134,7 +134,8 @@ struct RecruitView: View {
     // 現在レート
     @ViewBuilder private func nowRateForm() -> some View {
         HStack{
-            Picker("ウデマエ", selection: $recruitData.nowRank) {
+            Picker("現在レート", selection: $recruitData.nowRank) {
+                Text("XP").tag("XP")
                 Text("S+").tag("S+")
                 Text("S").tag("S")
                 Text("~A").tag("~A")
@@ -148,7 +149,8 @@ struct RecruitView: View {
     // 募集レート
     @ViewBuilder private func reqRateForm() -> some View {
         HStack{
-            Picker("募集条件", selection: $recruitData.reqRank) {
+            Picker("募集レート", selection: $recruitData.reqRank) {
+                Text("XP").tag("XP")
                 Text("S+").tag("S+")
                 Text("S").tag("S")
                 Text("~A").tag("~A")
