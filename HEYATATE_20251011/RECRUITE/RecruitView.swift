@@ -7,43 +7,38 @@
 
 import SwiftUI
 
+// 子ビューに受け渡し用
+struct RecruitData{
+    var game: Int = 1 // ゲーム選択を保持
+    var areas: [String] = [] // 実施場所を保持
+    var titles: String = "" // 募集タイトルを保持
+    var startDate = Date() // 開始時間を保持
+    var endDate = Date() // 終了時間を保持
+    var people: Int = 3 // 募集人数を保持
+    var joins: [String] = [] // 参加方法を保持
+    var vcs: [String] = [] // VC選択を保持
+    var nowRank: String = "選択" // 現在ランクを保持
+    var nowRate: String = "" // 現在レートを保持
+    var reqRank: String = "選択" // 募集ランクを保持
+    var reqRate: String = "" // 募集レートを保持
+    var modes: [String] = [] // 選択されたモードを保持
+    var tags: [String] = [] // 選択されたタグを保持
+}
+
 struct RecruitView: View {
     
-    @State private var selectedGame: Int = 1 // ゲーム選択用変数
-    @State private var gameMode: Int = 1 // ゲーム選択用変数
-    
-    @State private var recruitTitle: String = "" // 募集タイトル
-    @State private var startDate = Date() // 時間選択用変数
-    @State private var endDate = Date() // 時間選択用変数
-    @State private var isOpen: Bool = false // オープン選択状態
-    @State private var isSamorun: Bool = false // サモラン選択状態
-    @State private var isPrivate: Bool = false // プラベ選択状態
-    @State private var people: Int = 4 // 募集人数
+    // 子ビューに受け渡し用
+    @State private var recruitData = RecruitData()
     
     // 実施場所
-    @State private var selectedAreas: [String] = [] // 選択されたモードを保持するリスト
     private let areaList1: [String] = ["スペース", "Discord","公式Discord"]
-    
     // 参加方法
-    @State private var selectedJoins: [String] = [] // 選択されたモードを保持するリスト
     private let joinList1: [String] = ["返信(X)", "チャット", "スペース直"]
-    
     // VC
-    @State private var selectedVCs: [String] = [] // 選択されたモードを保持するリスト
     private var vcList1: [String] = ["あり", "なし", "どちらでも"]
-    
-    
-    @State private var udemaeNow: String = "選択" // 腕前(現在)
-    @State private var lateNow: String = "" // レート(現在)
-    @State private var udemaeReq: String = "選択" // 腕前(募集)
-    @State private var lateReq: String = "" // 実力(募集)
-    
     // モード選択
-    @State private var selectedModes: [String] = [] // 選択されたモードを保持するリスト
     private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
-    
     // その他タグ
-    @State private var selectedTags: [String] = [] // 選択されたタグを保持するリスト
     private let tagList1: [String] = ["#エンジョイ", "#ガチ", "#レート上げ"]
     private let tagList2: [String] = ["#ゆる募", "#クリア重視", "初心者です"]
     private let tagList3: [String] = ["#社会人", "#成人", "#学生", "#🔰歓迎"]
@@ -55,7 +50,7 @@ struct RecruitView: View {
     var body: some View {
         VStack{
             Text("プレビュー")
-            CreateImageView()
+            ImageView() // プレビュー
             Text("募集事項")
             Form{
                 gameForm() // ゲーム
@@ -76,9 +71,14 @@ struct RecruitView: View {
         }
     }
     
+    // テンプレートプレビュー
+    private func ImageView() -> some View{
+        CreateImageView(recruitData : $recruitData)
+    }
+    
     // ゲーム選択
     @ViewBuilder private func gameForm() -> some View {
-        Picker("ゲームを選択", selection: $selectedGame) {
+        Picker("ゲームを選択", selection: $recruitData.game) {
             // 選択項目の一覧を生成
             Text("スプラトゥーン3").tag(1)
             Text("ぶどう").tag(2)
@@ -86,16 +86,16 @@ struct RecruitView: View {
         }
     }
     
-    /// タイトル記載
-    @ViewBuilder private func titleForm() -> some View { // 新規追加
+    // タイトル記載
+    @ViewBuilder private func titleForm() -> some View { // タイトル入力フォームを構築
         HStack {
-            Text("題名：")
-            TextField("タイトル入力(15文字まで)", text: $recruitTitle)
-                .onChange(of: recruitTitle) {
-                    // 15文字を超えた場合に超過分をトリミングする処理
-                    if recruitTitle.count > 15 {
-                        // 文字列を先頭からtitleCharacterLimit文字で切り詰める
-                        recruitTitle = String(recruitTitle.prefix(15))
+            Text("題名：") // 題名のラベル
+            TextField("サモラン募集伝説400から", text: $recruitData.titles)
+                .onChange(of: recruitData.titles) {
+                    // 文字数制限を超過した場合の処理
+                    if recruitData.titles.count > 15 { // 文字数制限
+                        // 文字列を先頭から定数で切り詰める
+                        recruitData.titles = String(recruitData.titles.prefix(15))
                     }
                 }
         }
@@ -104,9 +104,9 @@ struct RecruitView: View {
     // モード選択
     @ViewBuilder private func modeForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
-            Text("モード選択").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+            Text("現在レート").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             TagSelectionRow(
-                rowTags: modeList1,selectedTags: $selectedModes
+                rowTags: modeList1,selectedTags: $recruitData.modes
             ).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // 中央
         }
     }
@@ -114,9 +114,9 @@ struct RecruitView: View {
     // 実施場所
     @ViewBuilder private func areaForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
-            Text("実施場所").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+            Text("募集レート").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             TagSelectionRow(
-                rowTags: areaList1,selectedTags: $selectedAreas
+                rowTags: areaList1,selectedTags: $recruitData.areas
             )
         }
     }
@@ -126,7 +126,7 @@ struct RecruitView: View {
         VStack(alignment: .leading, spacing: 5){
             Text("参加方法").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             TagSelectionRow(
-                rowTags: joinList1,selectedTags: $selectedJoins
+                rowTags: joinList1,selectedTags: $recruitData.joins
             )
         }
     }
@@ -134,34 +134,34 @@ struct RecruitView: View {
     // 現在レート
     @ViewBuilder private func nowRateForm() -> some View {
         HStack{
-            Picker("ウデマエ", selection: $udemaeNow) {
+            Picker("ウデマエ", selection: $recruitData.nowRank) {
                 Text("S+").tag("S+")
                 Text("S").tag("S")
                 Text("~A").tag("~A")
                 Text("でんせつ").tag("でんせつ")
                 Text("たつじん").tag("たつじん")
             }
-            TextField("400", text: $lateNow).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+            TextField("400", text: $recruitData.nowRate).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }
     }
     
     // 募集レート
     @ViewBuilder private func reqRateForm() -> some View {
         HStack{
-            Picker("募集条件", selection: $udemaeReq) {
+            Picker("募集条件", selection: $recruitData.reqRank) {
                 Text("S+").tag("S+")
                 Text("S").tag("S")
                 Text("~A").tag("~A")
                 Text("でんせつ").tag("でんせつ")
                 Text("たつじん").tag("たつじん")
             }
-            TextField("400", text: $lateNow).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+            TextField("400", text: $recruitData.reqRate).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
         }
     }
     
     // 募集人数
     @ViewBuilder private func peopleForm() -> some View {
-        Picker("募集人数", selection: $people) {
+        Picker("募集人数", selection: $recruitData.people) {
             ForEach(1..<5) { number in // 新規追加: 募集人数をリストとして生成
                 Text("\(number) 人").tag(number) // \(number) 人
             }
@@ -174,7 +174,7 @@ struct RecruitView: View {
         VStack(alignment: .leading, spacing: 5){
             Text("ボイスチャット").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             TagSelectionRow(
-                rowTags: vcList1, selectedTags: $selectedVCs
+                rowTags: vcList1, selectedTags: $recruitData.vcs
             )
         }
     }
@@ -183,12 +183,12 @@ struct RecruitView: View {
     @ViewBuilder private func timeForm() -> some View {
         DatePicker(
             "開始時間",
-            selection: $startDate,
+            selection: $recruitData.startDate,
             displayedComponents: [.hourAndMinute]
         ).datePickerStyle(.compact)
         DatePicker(
             "終了時間",
-            selection: $endDate,
+            selection: $recruitData.endDate,
             displayedComponents: [.hourAndMinute]
         ).datePickerStyle(.compact)
     }
@@ -198,22 +198,22 @@ struct RecruitView: View {
         VStack(alignment: .leading, spacing: 5){
             Text("その他タグ").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             TagSelectionRow(
-                rowTags: tagList1,selectedTags: $selectedTags
+                rowTags: tagList1,selectedTags: $recruitData.tags
             )
             TagSelectionRow(
-                rowTags: tagList2,selectedTags: $selectedTags
+                rowTags: tagList2,selectedTags: $recruitData.tags
             )
             TagSelectionRow(
-                rowTags: tagList3,selectedTags: $selectedTags
+                rowTags: tagList3,selectedTags: $recruitData.tags
             )
             TagSelectionRow(
-                rowTags: tagList4,selectedTags: $selectedTags
+                rowTags: tagList4,selectedTags: $recruitData.tags
             )
             TagSelectionRow(
-                rowTags: tagList5,selectedTags: $selectedTags
+                rowTags: tagList5,selectedTags: $recruitData.tags
             )
             TagSelectionRow(
-                rowTags: tagList6,selectedTags: $selectedTags
+                rowTags: tagList6,selectedTags: $recruitData.tags
             )
         }
     }

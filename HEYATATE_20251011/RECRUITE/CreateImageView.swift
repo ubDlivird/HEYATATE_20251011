@@ -10,6 +10,9 @@ import SwiftUI
 
 struct CreateImageView: View {
     
+    // 親ビューからの選択変数リスト
+    @Binding var recruitData : RecruitData
+    
     //変数
     private let paddingPx: CGFloat = 1
     
@@ -190,6 +193,10 @@ struct CreateImageView: View {
     
 }
 
+//MARK: - プレビュー
 #Preview {
-    CreateImageView()
+    // 変数
+    @Previewable @State var dummyData = RecruitData()
+    // コーディングのコメント: CreateImageViewにバインディングを渡して初期化
+    return CreateImageView(recruitData: $dummyData)
 }
