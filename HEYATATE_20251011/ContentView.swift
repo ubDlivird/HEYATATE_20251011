@@ -32,9 +32,9 @@ struct ContentView: View {
             }
             
             // プロフィール
-            Text("home")
+            SampleView()
                 .tabItem { // MARK: TabItem: プロフィール
-                    Label("プロフィール", systemImage: "person.fill")
+                    Label("テスト投稿", systemImage: "person.fill")
                 }
             
             // 暫定

@@ -23,12 +23,16 @@ struct RecruitData{
     var reqRate: String = "" // 募集レートを保持
     var modes: [String] = [] // 選択されたモードを保持
     var tags: [String] = [] // 選択されたタグを保持
+    var comment: String = "" // 投稿コメントを保持
 }
 
 struct RecruitView: View {
     
     // 子ビューに受け渡し用
     @State private var recruitData = RecruitData()
+    
+    // 共有ロジックをViewの状態として保持
+    @StateObject private var shareLogic = ShareLogic()
     
     // モード選択
     private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
@@ -40,12 +44,13 @@ struct RecruitView: View {
     private var vcList1: [String] = ["あり", "なし", "どちらでも"]
     // その他タグ
     private let tagList1: [String] = ["#エンジョイ", "#ガチ", "#レート上げ"]
-    private let tagList2: [String] = ["#ゆる募", "#クリア重視", "初心者です"]
-    private let tagList3: [String] = ["#社会人", "#成人", "#学生", "#🔰歓迎"]
+    private let tagList2: [String] = ["#ゆる募", "#クリア重視", "#初心者です"]
+    private let tagList3: [String] = ["#20歳以上","#社会人", "#学生"]
     private let tagList4: [String] = ["#身内のみ", "#FF外歓迎", "#カンスト"]
     private let tagList5: [String] = ["#途中抜け⭕️","#休憩あり","#飲酒中"]
     private let tagList6: [String] = ["#聞き専⭕️", "#聞き専❌","#不穏❌"]
-    
+    private let tagList7: [String] = ["#タメ口⭕️", "#戦犯⭕️","#🔰歓迎"]
+
     
     var body: some View {
         VStack{
@@ -57,16 +62,16 @@ struct RecruitView: View {
                 modeForm() // モード
                 titleForm() // 題名
                 peopleForm() // 人数
+                timeForm() // 時間選択
                 vcForm() // VC有無
                 areaForm() // 実施場所
-                joinForm() // 参加方法
+//                joinForm() // 参加方法
                 nowRateForm() // 現在レート
                 reqRateForm() // 募集レート
-                timeForm() // 時間選択
                 tagForm() // その他タグ
+                commentForm() // 投稿コメント
+                heyateteButton() // ヘヤタテボタン
             }
-            Spacer()
-            Text("Xに投稿、スペースを開く、募集ボタン")
         }
     }
     
@@ -110,7 +115,6 @@ struct RecruitView: View {
         }
     }
 
-    
     // 実施場所
     @ViewBuilder private func areaForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
@@ -124,7 +128,7 @@ struct RecruitView: View {
     // 参加方法
     @ViewBuilder private func joinForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
-            Text("参加方法").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+            Text("投稿コメント").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
             TagSelectionRow(
                 rowTags: joinList1,selectedTags: $recruitData.joins
             )
@@ -143,6 +147,13 @@ struct RecruitView: View {
                 Text("達人").tag("達人")
             }
             TextField("400", text: $recruitData.nowRate).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+                .onChange(of: recruitData.nowRate) {
+                    // 文字数制限を超過した場合の処理
+                    if recruitData.nowRate.count > 4 { // 文字数制限
+                        // 文字列を先頭から定数で切り詰める
+                        recruitData.nowRate = String(recruitData.nowRate.prefix(4))
+                    }
+                }
         }
     }
     
@@ -150,6 +161,7 @@ struct RecruitView: View {
     @ViewBuilder private func reqRateForm() -> some View {
         HStack{
             Picker("募集レート", selection: $recruitData.reqRank) {
+                Text("無制限").tag("無制限")
                 Text("XP").tag("XP")
                 Text("S+").tag("S+")
                 Text("S").tag("S")
@@ -158,6 +170,13 @@ struct RecruitView: View {
                 Text("達人").tag("達人")
             }
             TextField("400", text: $recruitData.reqRate).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+                .onChange(of: recruitData.reqRate) {
+                    // 文字数制限を超過した場合の処理
+                    if recruitData.reqRate.count > 4 { // 文字数制限
+                        // 文字列を先頭から定数で切り詰める
+                        recruitData.reqRate = String(recruitData.reqRate.prefix(4))
+                    }
+                }
         }
     }
     
@@ -195,6 +214,53 @@ struct RecruitView: View {
         ).datePickerStyle(.compact)
     }
     
+    // コメント記載
+    @ViewBuilder private func commentForm() -> some View {
+        VStack {
+            Text("フリーコメント").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
+            TextField("お気軽にどうぞ〜！", text: $recruitData.comment)
+                .onChange(of: recruitData.comment) {
+                    // 文字数制限を超過した場合の処理
+                    if recruitData.comment.count > 140 { // 文字数制限
+                        // 文字列を先頭から定数で切り詰める
+                        recruitData.comment = String(recruitData.comment.prefix(140))
+                    }
+                }
+        }
+    }
+    
+    // ヘヤタテボタン
+        @ViewBuilder private func heyateteButton() -> some View {
+            Button(action: {
+                // ImageView()を渡して共有ロジックを呼び出す
+                shareLogic.share(view: ImageView(), textToShare: recruitData.comment)
+            }) {
+                Text("ヘヤタテする！")
+            }
+            .padding()
+            .accentColor(Color.white)
+            .background(Color.blue)
+            .cornerRadius(.infinity)
+            // レンダリング中はボタンを無効化
+            .disabled(shareLogic.isRendering)
+            // レンダリング中はProgressViewを重ねて表示
+            .overlay {
+                // レンダリング中の場合にProgressViewを表示
+                if shareLogic.isRendering {
+                    ProgressView()
+                }
+            }
+            // 共有シートの表示ロジックをこのメソッド内に移動
+            .sheet(isPresented: $shareLogic.isSharing, onDismiss: shareLogic.didDismissShareSheet) {
+                // 共有アイテムを取得し、ActivityViewを表示
+                let items = shareLogic.createActivityItems()
+                if !items.isEmpty {
+                    // 共有したいアイテム（画像とテキスト）を渡す
+                    ActivityView(activityItems: items)
+                }
+            }
+        }
+    
     // その他タグ
     @ViewBuilder private func tagForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
@@ -216,6 +282,9 @@ struct RecruitView: View {
             )
             TagSelectionRow(
                 rowTags: tagList6,selectedTags: $recruitData.tags
+            )
+            TagSelectionRow(
+                rowTags: tagList7,selectedTags: $recruitData.tags
             )
         }
     }
