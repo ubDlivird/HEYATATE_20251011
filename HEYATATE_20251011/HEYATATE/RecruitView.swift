@@ -82,11 +82,13 @@ struct RecruitView: View {
     
     // ゲーム選択
     @ViewBuilder private func gameForm() -> some View {
+        ZStack{
+            
+        }
+        
         Picker("ゲームを選択", selection: $recruitData.game) {
             // 選択項目の一覧を生成
             Text("スプラトゥーン3").tag("#スプラトゥーン3")
-            Text("ぶどう").tag("#ぶどう")
-            Text("りんご").tag("#りんご")
         }
     }
     
@@ -230,7 +232,9 @@ struct RecruitView: View {
     }
     
     // ヘヤタテボタン
-        @ViewBuilder private func heyateteButton() -> some View {
+    @ViewBuilder private func heyateteButton() -> some View {
+        HStack{
+            Spacer()
             Button(action: {
                 // ImageView()を渡して共有ロジックを呼び出す
                 shareLogic.share(view: ImageView(), textToShare: recruitData.comment)
@@ -259,7 +263,10 @@ struct RecruitView: View {
                     ActivityView(activityItems: items)
                 }
             }
+            Spacer()
+
         }
+    }
     
     // その他タグ
     @ViewBuilder private func tagForm() -> some View {
