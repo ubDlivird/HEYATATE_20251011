@@ -19,29 +19,29 @@ struct ContentView: View {
         // TabViewで画面下部にメニューバーを作成
         TabView {
             
-            // フィード
-            Text("feed")
+            // 1番目タブ
+            feedView()
                 .tabItem { // MARK: TabItem: フィード
                     Label("フィード", systemImage: "person.fill")
                 }
             
-            // 募集
+            // 2番目タブ
             RecruitView()
                 .tabItem { // MARK: TabItem: ホーム
-                Label("募集", systemImage: "house.fill")
+                Label("ヘヤタテ", systemImage: "house.fill")
             }
             
-            // プロフィール
-            SampleView()
-                .tabItem { // MARK: TabItem: プロフィール
-                    Label("テスト投稿", systemImage: "person.fill")
-                }
+            // 3番目タブ
+//            SampleView()
+//                .tabItem { // MARK: TabItem: プロフィール
+//                    Label("ご意見箱", systemImage: "paperplane")
+//                }
             
             // 暫定
-            LoadMapView()
-                .tabItem { // MARK: TabItem: プロフィール
-                    Label("ロードマップ", systemImage: "person.fill")
-                }
+//            LoadMapView()
+//                .tabItem { // MARK: TabItem: プロフィール
+//                    Label("応援する", systemImage: "gear")
+//                }
         }
     }
 }
