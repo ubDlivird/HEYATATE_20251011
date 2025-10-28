@@ -8,7 +8,7 @@
 import SwiftUI
 
 // 子ビューに受け渡し用
-struct RecruitData{
+struct RecruitData: Codable{
     var game: String = "" // ゲーム選択を保持
     var areas: [String] = [] // 実施場所を保持
     var title: String = "" // 募集タイトルを保持
@@ -24,6 +24,7 @@ struct RecruitData{
     var modes: [String] = [] // 選択されたモードを保持
     var tags: [String] = [] // 選択されたタグを保持
     var comment: String = "" // 投稿コメントを保持
+    var imageFileName: String = "" // 画像ファイル名を保持
 }
 
 struct RecruitView: View {
@@ -33,6 +34,9 @@ struct RecruitView: View {
     
     // 共有ロジックをViewの状態として保持
     @StateObject private var shareLogic = ShareLogic()
+    
+    // 投稿管理マネージャのシングルトンインスタンスを取得
+    private let postManager = PostManager.shared
     
     // モード選択
     private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
@@ -236,8 +240,12 @@ struct RecruitView: View {
         HStack{
             Spacer()
             Button(action: {
-                // ImageView()を渡して共有ロジックを呼び出す
-                shareLogic.share(view: ImageView(), textToShare: recruitData.comment)
+                // recruitDataとpostManagerのインスタンスをShareLogicに渡す
+                shareLogic.share(
+                    view: ImageView(),
+                    recruitData: recruitData, // RecruitDataを渡す
+                    postManager: postManager // PostManagerの参照を渡す
+                )
             }) {
                 Text("ヘヤタテする！")
             }
