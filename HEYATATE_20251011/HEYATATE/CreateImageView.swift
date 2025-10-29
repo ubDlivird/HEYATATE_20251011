@@ -16,11 +16,13 @@ struct CreateImageView: View {
     //題名の余白
     private let paddingPx: CGFloat = 2
     // 見出しの統一フォント
-    private let headFont: Font = .footnote.bold()
+    private let headFont: Font = .system(size: 12)
     // 内容の統一フォント
-    private let innerFont: Font = .title2.bold()
+    private let innerFont: Font = .system(size: 20).bold()
     // タイトル上余白
     private let headPadding: CGFloat = 8
+    // 画像レンダリング用の固定幅
+    private let imageRenderWidth: CGFloat = 360
     
     var body: some View {
         VStack{
@@ -51,7 +53,7 @@ struct CreateImageView: View {
                 .aspectRatio(16/9, contentMode: .fit) // アスペクト16:9
             }
 
-        }
+        }.frame(width: imageRenderWidth)
     }
     
     // 1列目実装
@@ -92,7 +94,7 @@ struct CreateImageView: View {
             // 開始〜終了
             HStack(spacing: 2) {
                 Text(recruitData.startDate, style: .time)
-                Text("〜")
+                Text("~")
                 Text(recruitData.endDate, style: .time)
             }
             .frame(maxWidth: .infinity) // 中央

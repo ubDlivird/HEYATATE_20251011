@@ -6,87 +6,93 @@
 //
 
 import SwiftUI
-import UIKit // UIImageを使用するため
+import UIKit
 
 // MARK: - フィードビュー
-/// 投稿されたRecruitDataのリストを表示するビュー
 struct feedView: View {
  
-    // [新規追加] 投稿管理マネージャをObserviedObjectとして注入
     @ObservedObject var postManager = PostManager.shared
     
+    // MARK: - View Body
     var body: some View {
-        NavigationView { // フィードなのでNavigationViewを追加
+        NavigationView {
             List {
-                // [新規追加] PostManagerが持つ投稿リストをループして表示
+                // 投稿リストをループして表示
                 ForEach(postManager.posts, id: \.title) { post in
                     VStack(alignment: .leading, spacing: 10) {
-                        // 1. 画像の表示
-                        // ファイル名から画像を読み込むヘルパーメソッドを使用
-                        if let uiImage = loadImage(fileName: post.imageFileName) {
-                            // UIImageをSwiftUIのImageとして表示
-                            Image(uiImage: uiImage)
-                                .resizable() // コーディングのコメント: 画像をリサイズ可能に
-                                .aspectRatio(16/9, contentMode: .fit) // コーディングのコメント: アスペクト比16:9を維持
-                                .cornerRadius(10) // コーディングのコメント: 角の丸み
-                        } else {
-                            // 画像がない、または読み込みに失敗した場合のプレースホルダ
-                            Text("画像が見つかりません。ファイル名: \(post.imageFileName)") // コーディングのコメント: 画像なしメッセージ
-                                .foregroundColor(.secondary) // コーディングのコメント: 文字色を薄く
-                        }
-                        
-                        // 2. コメントの表示
-                        Text(post.comment) // コーディングのコメント: 投稿コメントを表示
-                            .font(.body) // コーディングのコメント: 本文フォント
-                        
-                        // 3. 投稿情報の概要表示
-                        HStack {
-                            Text("ゲーム: \(post.game)") // コーディングのコメント: ゲーム名を表示
-                            Spacer() // コーディングのコメント: スペースで左右に分離
-                            Text("モード: \(post.modes.joined(separator: ", "))") // コーディングのコメント: モードを表示
-                        }
-                        .font(.caption) // コーディングのコメント: キャプションフォント
-                        .foregroundColor(.gray) // コーディングのコメント: 灰色文字
+                        // 投稿情報の概要表示
+                        postSummarySection(post: post)
+                        // コメントの表示
+                        postCommentSection(post: post)
+                        // 画像の表示
+                        postImageSection(post: post)
+
                     }
-                    .padding(.vertical, 5) // コーディングのコメント: 縦の余白を追加
+                    .padding(.vertical, 5)
                 }
-                // [新規追加] 投稿がない場合のメッセージ
+                // 投稿がない場合のメッセージ
                 if postManager.posts.isEmpty {
-                    Text("まだ投稿がありません。「募集」タブから作成してください。") // コーディングのコメント: 投稿なしメッセージ
-                        .foregroundColor(.secondary) // コーディングのコメント: 文字色を薄く
+                    Text("まだ投稿がありません。「募集」タブから作成してください。")
+                        .foregroundColor(.secondary)
                 }
             }
-            .navigationTitle("フィード") // コーディングのコメント: ナビゲーションタイトル設定
+            .navigationTitle("フィード")
         }
-        // [新規追加] ビューが表示されたときに保存データを読み込む
+        // 画面表示時に投稿データを読み込み
         .onAppear {
-            postManager.loadPosts() // コーディングのコメント: 画面表示時に投稿データを読み込み
+            postManager.loadPosts()
         }
+    }
+    
+    // MARK: - 1. 画像の表示
+    /// 投稿に添付された画像を表示する
+    @ViewBuilder private func postImageSection(post: RecruitData) -> some View {
+        if let uiImage = loadImage(fileName: post.imageFileName) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(16/9, contentMode: .fit)
+                .cornerRadius(10)
+        } else {
+            // 画像がない場合のプレースホルダ
+            Text("画像が見つかりません。ファイル名: \(post.imageFileName)")
+                .foregroundColor(.secondary)
+        }
+    }
+    
+    // MARK: - 2. コメントの表示
+    /// 投稿のコメントを表示する
+    private func postCommentSection(post: RecruitData) -> some View {
+        Text(post.comment)
+            .font(.body)
+    }
+    
+    // MARK: - 3. 投稿情報の概要表示
+    /// 投稿のゲーム名とモードの概要を表示する
+    private func postSummarySection(post: RecruitData) -> some View {
+        HStack {
+            Text("ゲーム: \(post.game)")
+            Spacer()
+            Text("モード: \(post.modes.joined(separator: ", "))")
+        }
+        .font(.caption)
+        .foregroundColor(.gray)
     }
     
     // MARK: - 画像読み込みメソッド
     
     /// Documentsディレクトリから指定されたファイル名の画像を読み込む
-    /// - Parameter fileName: 読み込む画像ファイル名
-    /// - Returns: 読み込まれたUIImage、または失敗した場合はnil
     private func loadImage(fileName: String) -> UIImage? {
-        // [新規] DocumentsディレクトリのURLを取得
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            print("Documentsディレクトリの取得に失敗しました。") // コーディングのコメント: Documentsディレクトリ取得失敗
             return nil
         }
         
-        // [新規] 画像ファイルの完全なURL
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         
         do {
-            // [新規] ファイルからデータを読み込む
-            let data = try Data(contentsOf: fileURL) // コーディングのコメント: ファイルデータを読み込み
-            // [新規] DataからUIImageを作成
-            return UIImage(data: data) // コーディングのコメント: UIImageとして作成
+            let data = try Data(contentsOf: fileURL)
+            return UIImage(data: data)
         } catch {
-            // [新規] ファイル読み込み失敗時のエラー処理
-            print("画像ファイルの読み込みに失敗しました: \(error.localizedDescription)") // コーディングのコメント: ファイル読み込み失敗
+            print("画像ファイルの読み込みに失敗しました: \(error.localizedDescription)")
             return nil
         }
     }
@@ -94,6 +100,5 @@ struct feedView: View {
 
 
 #Preview {
-    // プレビュー用にPostManagerのシングルトンを環境オブジェクトとして提供
     feedView()
 }

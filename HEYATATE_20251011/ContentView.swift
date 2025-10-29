@@ -20,16 +20,16 @@ struct ContentView: View {
         TabView {
             
             // 1番目タブ
-            feedView()
-                .tabItem { // MARK: TabItem: フィード
-                    Label("フィード", systemImage: "person.fill")
-                }
-            
-            // 2番目タブ
             RecruitView()
                 .tabItem { // MARK: TabItem: ホーム
                 Label("ヘヤタテ", systemImage: "house.fill")
             }
+            
+            // 2番目タブ
+            feedView()
+                .tabItem { // MARK: TabItem: フィード
+                    Label("フィード", systemImage: "person.fill")
+                }
             
             // 3番目タブ
 //            SampleView()

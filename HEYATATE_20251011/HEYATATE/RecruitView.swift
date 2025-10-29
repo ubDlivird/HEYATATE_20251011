@@ -38,6 +38,9 @@ struct RecruitView: View {
     // 投稿管理マネージャのシングルトンインスタンスを取得
     private let postManager = PostManager.shared
     
+//    // 画像レンダリング用の固定幅
+//    private let imageRenderWidth: CGFloat = 320
+    
     // モード選択
     private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
     // 実施場所
@@ -242,6 +245,7 @@ struct RecruitView: View {
             Button(action: {
                 // recruitDataとpostManagerのインスタンスをShareLogicに渡す
                 shareLogic.share(
+                    // ImageView()が返すビューに固定のframeを適用し、レンダリングサイズを固定する
                     view: ImageView(),
                     recruitData: recruitData, // RecruitDataを渡す
                     postManager: postManager // PostManagerの参照を渡す
