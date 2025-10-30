@@ -15,10 +15,16 @@ struct CreateImageView: View {
     
     //題名の余白
     private let paddingPx: CGFloat = 2
+    // 内容の統一カラー
+    private let titleColor: Color = .orange
     // 見出しの統一フォント
     private let headFont: Font = .system(size: 12)
     // 内容の統一フォント
     private let innerFont: Font = .system(size: 20).bold()
+    // 内容の統一カラー
+    private let innerColor: Color = .orange
+    // その他タグ用カラー
+    private let otherColor: Color = .white
     // タイトル上余白
     private let headPadding: CGFloat = 8
     // 画像レンダリング用の固定幅
@@ -78,6 +84,10 @@ struct CreateImageView: View {
                 .minimumScaleFactor(0.01)
                 .padding([.top], headPadding) // 内容用余白(上)
                 .font(innerFont) // 見出し用フォント
+                .shadow(color: titleColor, // 影の色
+                                radius: 5, // 太さ
+                                x: 0,
+                                y: 0)
         }
     }
     
@@ -94,8 +104,10 @@ struct CreateImageView: View {
             // 開始〜終了
             HStack(spacing: 2) {
                 Text(recruitData.startDate, style: .time)
+                    .foregroundColor(innerColor) // 内容文字色
                 Text("~")
                 Text(recruitData.endDate, style: .time)
+                    .foregroundColor(innerColor) // 内容文字色
             }
             .frame(maxWidth: .infinity) // 中央
             .padding([.top], headPadding) // 内容用余白(上)
@@ -116,6 +128,7 @@ struct CreateImageView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
                 .padding([.top], headPadding) // 内容用余白(上)
                 .font(innerFont) // 見出し用フォント
+                .foregroundColor(innerColor) // 内容文字色
         }
     }
     
@@ -132,7 +145,8 @@ struct CreateImageView: View {
             Text(recruitData.vcs.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
                 .padding([.top], headPadding) // 内容用余白(上)
-                .font(innerFont) // 見出し用フォント
+                .font(innerFont) // 内容用フォント
+                .foregroundColor(innerColor) // 内容文字色
         }
     }
     
@@ -150,6 +164,7 @@ struct CreateImageView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
                 .padding([.top], headPadding) // 内容用余白(上)
                 .font(innerFont) // 見出し用フォント
+                .foregroundColor(innerColor) // 内容文字色
         }
     }
     
@@ -182,6 +197,8 @@ struct CreateImageView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
                 .padding([.top], headPadding) // 内容用余白(上)
                 .font(innerFont) // 見出し用フォント
+                .foregroundColor(innerColor) // 内容文字色
+
         }
     }
     
@@ -199,15 +216,17 @@ struct CreateImageView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
                 .padding([.top], headPadding) // 内容用余白(上)
                 .font(innerFont) // 見出し用フォント
+                .foregroundColor(innerColor) // 内容文字色
+
         }
     }
     
     // その他タグ
     private func tagView() -> some View{
             // その他
-            Text(recruitData.tags.joined(separator: " "))
+            Text(recruitData.tags.joined(separator: "  "))
             .font(headFont) // 見出し用フォント
-            .foregroundColor(Color.white) // 白文字
+            .foregroundColor(otherColor) // 白文字
     }
     
 }

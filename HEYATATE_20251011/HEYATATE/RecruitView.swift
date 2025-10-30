@@ -171,12 +171,14 @@ struct RecruitView: View {
         HStack{
             Picker("募集レート", selection: $recruitData.reqRank) {
                 Text("無制限").tag("無制限")
+                Text("伝説").tag("伝説")
+                Text("達人").tag("達人")
                 Text("XP").tag("XP")
                 Text("S+").tag("S+")
                 Text("S").tag("S")
-                Text("~A").tag("~A")
-                Text("伝説").tag("伝説")
-                Text("達人").tag("達人")
+                Text("A").tag("A")
+                Text("B").tag("B")
+                Text("C").tag("C")
             }
             TextField("400", text: $recruitData.reqRate).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
                 .onChange(of: recruitData.reqRate) {
