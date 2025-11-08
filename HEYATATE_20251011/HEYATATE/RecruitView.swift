@@ -53,7 +53,7 @@ struct RecruitView: View {
     private let tagList1: [String] = ["#エンジョイ", "#ガチ", "#レート上げ"]
     private let tagList2: [String] = ["#ゆる募", "#クリア重視", "#初心者です"]
     private let tagList3: [String] = ["#20歳以上","#社会人", "#学生"]
-    private let tagList4: [String] = ["#FFのみ", "#FF外歓迎", "#カンスト"]
+    private let tagList4: [String] = ["#FFのみ", "#FF外歓迎", "#だれでも"]
     private let tagList5: [String] = ["#途中抜け⭕️","#休憩あり","#飲酒中"]
     private let tagList6: [String] = ["#聞き専⭕️", "#聞き専❌","#不穏❌"]
     private let tagList7: [String] = ["#タメ口⭕️", "#戦犯⭕️","#🔰歓迎"]
@@ -103,7 +103,7 @@ struct RecruitView: View {
     @ViewBuilder private func modeForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("モード選択").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            TagSelectionRow(
+            TagMulch(
                 rowTags: modeList1,selectedTags: $recruitData.modes
             ).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // 中央
         }
@@ -128,7 +128,7 @@ struct RecruitView: View {
     @ViewBuilder private func areaForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("実施場所").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            TagSelectionRow(
+            TagOnly(
                 rowTags: areaList1,selectedTags: $recruitData.areas
             )
         }
@@ -138,7 +138,7 @@ struct RecruitView: View {
     @ViewBuilder private func joinForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("投稿コメント").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            TagSelectionRow(
+            TagMulch(
                 rowTags: joinList1,selectedTags: $recruitData.joins
             )
         }
@@ -201,11 +201,10 @@ struct RecruitView: View {
     }
     
     // VC選択
-    // その他タグ
     @ViewBuilder private func vcForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("ボイスチャット").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            TagSelectionRow(
+            TagOnly(
                 rowTags: vcList1, selectedTags: $recruitData.vcs
             )
         }
@@ -286,33 +285,32 @@ struct RecruitView: View {
     @ViewBuilder private func tagForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("その他タグ").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            TagSelectionRow(
+            TagMulch(
                 rowTags: tagList1,selectedTags: $recruitData.tags
             )
-            TagSelectionRow(
+            TagMulch(
                 rowTags: tagList2,selectedTags: $recruitData.tags
             )
-            TagSelectionRow(
+            TagMulch(
                 rowTags: tagList3,selectedTags: $recruitData.tags
             )
-            TagSelectionRow(
+            TagMulch(
                 rowTags: tagList4,selectedTags: $recruitData.tags
             )
-            TagSelectionRow(
+            TagMulch(
                 rowTags: tagList5,selectedTags: $recruitData.tags
             )
-            TagSelectionRow(
+            TagMulch(
                 rowTags: tagList6,selectedTags: $recruitData.tags
             )
-            TagSelectionRow(
+            TagMulch(
                 rowTags: tagList7,selectedTags: $recruitData.tags
             )
         }
     }
     
-    // 1行分の横並びの選択肢を表示し、選択状態をBindingで親と共有するビュー // 新規追加
-    // RecruitView構造体の直下に定義を移動
-    struct TagSelectionRow: View {
+    // タグ選択用(複数可)
+    struct TagMulch: View {
         let rowTags: [String]
         @Binding var selectedTags: [String]
         
@@ -348,6 +346,47 @@ struct RecruitView: View {
             }
         }
     }
+    
+    // タグ選択用(1つのみ)
+    struct TagOnly: View {
+        let rowTags: [String]
+        @Binding var selectedTags: [String]
+        
+        var body: some View {
+            HStack(spacing: 10) { // スペーシングを調整
+                ForEach(rowTags, id: \.self) { tag in
+                    tagButton(for: tag)
+                }
+                Spacer()
+            }
+        }
+        
+        private func tagButton(for tag: String) -> some View {
+            HStack {
+                Text(tag)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(selectedTags.contains(tag) ? Color.blue : Color(.systemGray5))
+            .foregroundColor(selectedTags.contains(tag) ? .white : .primary)
+            .cornerRadius(20)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                toggleSelection(for: tag)
+            }
+        }
+        
+        // 排他処理
+        private func toggleSelection(for tag: String) {
+            if selectedTags.contains(tag) { // 既に選択されている場合
+                selectedTags = [] // 配列を空にして非選択状態に戻す
+            } else { // 選択されていない場合
+                // 配列をタップされたタグのみで置き換え、他のタグを非選択状態にする
+                selectedTags = [tag]
+            }
+        }
+    }
+    
 }
 
 #Preview {
