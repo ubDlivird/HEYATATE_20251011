@@ -23,8 +23,10 @@ struct CreateImageView: View {
     private let innerFont: Font = .system(size: 20).bold()
     // 内容の統一カラー
     private let innerColor: Color = .orange
-    // その他タグ用カラー
-    private let otherColor: Color = .white
+    // タグ用フォント
+    private let tagFont: Font = .system(size: 12).bold()
+    // タグ用カラー
+    private let tagColor: Color = .white
     // タイトル上余白
     private let headPadding: CGFloat = 8
     // 画像レンダリング用の固定幅
@@ -67,16 +69,16 @@ struct CreateImageView: View {
         
         ZStack {
             // 背景
-            Rectangle().foregroundColor(.gray.opacity(0.5)) // 半透明
+            Rectangle().foregroundColor(.gray.opacity(0.3)) // 半透明
             // ゲーム名
             HStack{
                 Text(recruitData.game)
-                Text(recruitData.modes.joined(separator: " "))
+                Text(recruitData.modes.joined(separator: "  "))
             }
             .frame(
                 maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
-            .font(headFont) // 見出し用フォント
-            .foregroundColor(Color.white) // 白文字
+            .font(tagFont) // タグ用フォント
+            .foregroundColor(tagColor) // タグ用文字
             // タイトル
             Text(recruitData.title)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // 中央
@@ -224,9 +226,9 @@ struct CreateImageView: View {
     // その他タグ
     private func tagView() -> some View{
             // その他
-            Text(recruitData.tags.joined(separator: "  "))
-            .font(headFont) // 見出し用フォント
-            .foregroundColor(otherColor) // 白文字
+            Text(recruitData.tags.joined(separator: "   "))
+            .font(tagFont) // タグ用フォント
+            .foregroundColor(tagColor) // タグ用カラー
     }
     
 }

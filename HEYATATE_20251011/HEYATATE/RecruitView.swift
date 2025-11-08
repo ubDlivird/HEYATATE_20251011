@@ -53,7 +53,7 @@ struct RecruitView: View {
     private let tagList1: [String] = ["#エンジョイ", "#ガチ", "#レート上げ"]
     private let tagList2: [String] = ["#ゆる募", "#クリア重視", "#初心者です"]
     private let tagList3: [String] = ["#20歳以上","#社会人", "#学生"]
-    private let tagList4: [String] = ["#身内のみ", "#FF外歓迎", "#カンスト"]
+    private let tagList4: [String] = ["#FFのみ", "#FF外歓迎", "#カンスト"]
     private let tagList5: [String] = ["#途中抜け⭕️","#休憩あり","#飲酒中"]
     private let tagList6: [String] = ["#聞き専⭕️", "#聞き専❌","#不穏❌"]
     private let tagList7: [String] = ["#タメ口⭕️", "#戦犯⭕️","#🔰歓迎"]
