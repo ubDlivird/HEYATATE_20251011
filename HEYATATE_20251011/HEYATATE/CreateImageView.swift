@@ -12,7 +12,6 @@ struct CreateImageView: View {
     
     // 親ビューからの選択変数リスト
     @Binding var recruitData : RecruitData
-    
     //題名の余白
     private let paddingPx: CGFloat = 2
     // 内容の統一カラー

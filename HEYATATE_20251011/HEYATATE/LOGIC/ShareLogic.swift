@@ -57,6 +57,8 @@ final class ShareLogic: ObservableObject {
 
     // 共有するテキストデータを一時的に保持するためのプライベート変数
     private var shareText: String?
+    // レンダリング倍率
+    private var renderScale: CGFloat = 3.0
 
     // MARK: - メインアクション
 
@@ -77,6 +79,7 @@ final class ShareLogic: ObservableObject {
 
         // 1. ビューを画像としてレンダリング
         let renderer = ImageRenderer(content: view)
+        renderer.scale = renderScale
 
         // 2. UIImageを取得
         if let uiImage = renderer.uiImage {
@@ -130,7 +133,7 @@ final class ShareLogic: ObservableObject {
         self.isSharing = false
         self.renderedImage = nil
         self.shareText = nil
-        self.savedImageFileName = nil // コーディングのコメント: 共有完了時にファイル名もリセット
+        self.savedImageFileName = nil // 共有完了時にファイル名もリセット
     }
     
     // MARK: - 画像のファイル保存
@@ -139,31 +142,31 @@ final class ShareLogic: ObservableObject {
     /// - Parameter image: 保存するUIImage。
     /// - Returns: 保存された画像ファイル名。失敗した場合はnil。
     private func saveImageToFile(image: UIImage) -> String? {
-        // コーディングのコメント: UUIDに基づいた一意なファイル名を生成
+        // UUIDに基づいた一意なファイル名を生成
         let fileName = "\(UUID().uuidString).png"
         
-        // コーディングのコメント: DocumentsディレクトリのURLを取得
+        // DocumentsディレクトリのURLを取得
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            print("Documentsディレクトリの取得に失敗しました。") // コーディングのコメント: Documentsディレクトリの取得失敗
+            print("Documentsディレクトリの取得に失敗しました。") // Documentsディレクトリの取得失敗
             return nil
         }
         
-        // コーディングのコメント: 画像ファイルの完全なURL
+        // 画像ファイルの完全なURL
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         
-        // コーディングのコメント: UIImageをPNGデータに変換
+        // UIImageをPNGデータに変換
         guard let data = image.pngData() else {
-            print("UIImageをPNGデータに変換できませんでした。") // コーディングのコメント: PNGデータ変換失敗
+            print("UIImageをPNGデータに変換できませんでした。") // NGデータ変換失敗
             return nil
         }
         
         do {
-            // コーディングのコメント: ファイルに書き込み
+            // ファイルに書き込み
             try data.write(to: fileURL)
-            // コーディングのコメント: 成功したファイル名を返す
+            // 成功したファイル名を返す
             return fileName
         } catch {
-            print("画像ファイルの書き込みに失敗しました: \(error.localizedDescription)") // コーディングのコメント: ファイル書き込み失敗
+            print("画像ファイルの書き込みに失敗しました: \(error.localizedDescription)") // ファイル書き込み失敗
             return nil
         }
     }
