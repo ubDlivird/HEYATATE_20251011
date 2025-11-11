@@ -13,6 +13,9 @@ struct feedView: View {
  
     @ObservedObject var postManager = PostManager.shared
     
+    // 環境オブジェクトからマネージャーを参照
+    @EnvironmentObject var tabManager: TabManager
+    
     // MARK: - View Body
     var body: some View {
         NavigationView {
@@ -29,6 +32,13 @@ struct feedView: View {
 
                     }
                     .padding(.vertical, 5)
+                    .contentShape(Rectangle()) // タップ領域を広げる
+                    .onTapGesture {
+                        // データをマネージャーにセット
+                        tabManager.dataToEdit = post
+                        // タップ時にヘヤタテタブへ切り替え (タグ0)
+                        tabManager.selectedTab = 0
+                    }
                 }
                 // 投稿がない場合のメッセージ
                 if postManager.posts.isEmpty {

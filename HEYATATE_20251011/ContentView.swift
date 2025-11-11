@@ -13,36 +13,42 @@ import SwiftUI
 
 struct ContentView: View {
     
+    // コーディングのコメント: タブ状態管理オブジェクトを作成
+    @StateObject private var tabManager = TabManager()
+    
     // MARK: - TabView 実装
     
     var body: some View {
-        // TabViewで画面下部にメニューバーを作成
-        TabView {
+        // TabViewで画面下部にメニューバーを作成(selectionパラメータに状態変数をバインド)
+        TabView(selection: $tabManager.selectedTab) {
             
             // 1番目タブ
             RecruitView()
                 .tabItem { // MARK: TabItem: ホーム
-                Label("ヘヤタテ", systemImage: "house.fill")
-            }
+                    Label("ヘヤタテ", systemImage: "house.fill")
+                }
+                .tag(0)
             
             // 2番目タブ
             feedView()
                 .tabItem { // MARK: TabItem: フィード
                     Label("フィード", systemImage: "person.fill")
                 }
+                .tag(1)
             
             // 3番目タブ
-//            SampleView()
-//                .tabItem { // MARK: TabItem: プロフィール
-//                    Label("ご意見箱", systemImage: "paperplane")
-//                }
+            //            SampleView()
+            //                .tabItem { // MARK: TabItem: プロフィール
+            //                    Label("ご意見箱", systemImage: "paperplane")
+            //                }
             
             // 暫定
-//            LoadMapView()
-//                .tabItem { // MARK: TabItem: プロフィール
-//                    Label("応援する", systemImage: "gear")
-//                }
+            //            LoadMapView()
+            //                .tabItem { // MARK: TabItem: プロフィール
+            //                    Label("応援する", systemImage: "gear")
+            //                }
         }
+        .environmentObject(tabManager)
     }
 }
 

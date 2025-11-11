@@ -27,6 +27,7 @@ struct RecruitData: Codable{
     var imageFileName: String = "" // 画像ファイル名を保持
 }
 
+
 struct RecruitView: View {
     
     // 子ビューに受け渡し用
@@ -38,8 +39,8 @@ struct RecruitView: View {
     // 投稿管理マネージャのシングルトンインスタンスを取得
     private let postManager = PostManager.shared
     
-//    // 画像レンダリング用の固定幅
-//    private let imageRenderWidth: CGFloat = 320
+    // 環境オブジェクトからマネージャーを参照
+    @EnvironmentObject var tabManager: TabManager
     
     // モード選択
     private let modeList1: [String] = ["#オープン", "#サモラン", "#プラベ"]
@@ -78,6 +79,13 @@ struct RecruitView: View {
                 tagForm() // その他タグ
                 commentForm() // 投稿コメント
                 heyateteButton() // ヘヤタテボタン
+            }
+        }
+        .onAppear { // 👈 追加: VStackの直後に適用
+            // フィードから渡されたデータがあればフォームに反映しデータをクリア
+            if let data = tabManager.dataToEdit {
+                recruitData = data // データでフォームを更新
+                tabManager.dataToEdit = nil // データクリア
             }
         }
     }
@@ -391,4 +399,5 @@ struct RecruitView: View {
 
 #Preview {
     RecruitView()
+        .environmentObject(TabManager())
 }
