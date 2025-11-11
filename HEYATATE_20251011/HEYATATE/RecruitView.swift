@@ -60,6 +60,7 @@ struct RecruitView: View {
     private let tagList7: [String] = ["#タメ口⭕️", "#戦犯⭕️","#🔰歓迎"]
 
     
+    // MARK: メイン
     var body: some View {
         VStack{
             Text("プレビュー")
@@ -80,9 +81,15 @@ struct RecruitView: View {
                 commentForm() // 投稿コメント
                 heyateteButton() // ヘヤタテボタン
             }
+            // form内をスクロールでキーボードを閉じる
+            .simultaneousGesture(
+                DragGesture().onChanged { _ in
+                    self.endEditing() // キーボードを閉じる
+                }
+            )
         }
-        .onAppear { // 👈 追加: VStackの直後に適用
-            // フィードから渡されたデータがあればフォームに反映しデータをクリア
+        // フィードから渡されたデータがあればフォームに反映しデータをクリア
+        .onAppear {
             if let data = tabManager.dataToEdit {
                 recruitData = data // データでフォームを更新
                 tabManager.dataToEdit = nil // データクリア
@@ -90,24 +97,26 @@ struct RecruitView: View {
         }
     }
     
-    // テンプレートプレビュー
+    // MARK: テンプレートプレビュー
     private func ImageView() -> some View{
         CreateImageView(recruitData : $recruitData)
+        // VStack内をタップした場合に、他のコントロールの動作と同時にキーボードを非表示にする
+        .simultaneousGesture(
+            TapGesture().onEnded {
+                self.endEditing()
+            }
+        )
     }
     
-    // ゲーム選択
+    // MARK: ゲーム選択
     @ViewBuilder private func gameForm() -> some View {
-        ZStack{
-            
-        }
-        
         Picker("ゲームを選択", selection: $recruitData.game) {
             // 選択項目の一覧を生成
             Text("スプラトゥーン3").tag("#スプラトゥーン3")
         }
     }
     
-    // モード選択
+    // MARK: モード選択
     @ViewBuilder private func modeForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("モード選択").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
@@ -117,7 +126,7 @@ struct RecruitView: View {
         }
     }
     
-    // タイトル記載
+    // MARK: タイトル記載
     @ViewBuilder private func titleForm() -> some View { // タイトル入力フォームを構築
         HStack {
             Text("題名：") // 題名のラベル
@@ -132,7 +141,7 @@ struct RecruitView: View {
         }
     }
 
-    // 実施場所
+    // MARK: 実施場所
     @ViewBuilder private func areaForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("実施場所").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
@@ -142,7 +151,7 @@ struct RecruitView: View {
         }
     }
     
-    // 参加方法
+    // MARK: 参加方法
     @ViewBuilder private func joinForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("投稿コメント").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
@@ -152,7 +161,7 @@ struct RecruitView: View {
         }
     }
     
-    // 現在レート
+    // MARK: 現在レート
     @ViewBuilder private func nowRateForm() -> some View {
         HStack{
             Picker("現在レート", selection: $recruitData.nowRank) {
@@ -174,7 +183,7 @@ struct RecruitView: View {
         }
     }
     
-    // 募集レート
+    // MARK: 募集レート
     @ViewBuilder private func reqRateForm() -> some View {
         HStack{
             Picker("募集レート", selection: $recruitData.reqRank) {
@@ -199,7 +208,7 @@ struct RecruitView: View {
         }
     }
     
-    // 募集人数
+    // MARK: 募集人数
     @ViewBuilder private func peopleForm() -> some View {
         Picker("募集人数", selection: $recruitData.people) {
             ForEach(1..<5) { number in // 新規追加: 募集人数をリストとして生成
@@ -208,7 +217,7 @@ struct RecruitView: View {
         }
     }
     
-    // VC選択
+    // MARK: VC選択
     @ViewBuilder private func vcForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("ボイスチャット").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
@@ -218,7 +227,7 @@ struct RecruitView: View {
         }
     }
     
-    // 時間選択
+    // MARK: 時間選択
     @ViewBuilder private func timeForm() -> some View {
         DatePicker(
             "開始時間",
@@ -232,7 +241,7 @@ struct RecruitView: View {
         ).datePickerStyle(.compact)
     }
     
-    // コメント記載
+    // MARK: コメント記載
     @ViewBuilder private func commentForm() -> some View {
         VStack {
             Text("フリーコメント").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
@@ -247,7 +256,7 @@ struct RecruitView: View {
         }
     }
     
-    // ヘヤタテボタン
+    // MARK: ヘヤタテボタン
     @ViewBuilder private func heyateteButton() -> some View {
         HStack{
             Spacer()
@@ -289,7 +298,7 @@ struct RecruitView: View {
         }
     }
     
-    // その他タグ
+    // MARK: その他タグ
     @ViewBuilder private func tagForm() -> some View {
         VStack(alignment: .leading, spacing: 5){
             Text("その他タグ").frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
@@ -317,7 +326,7 @@ struct RecruitView: View {
         }
     }
     
-    // タグ選択用(複数可)
+    // MARK: タグ選択用(複数可)
     struct TagMulch: View {
         let rowTags: [String]
         @Binding var selectedTags: [String]
@@ -355,7 +364,7 @@ struct RecruitView: View {
         }
     }
     
-    // タグ選択用(1つのみ)
+    // MARK: タグ選択用(1つのみ)
     struct TagOnly: View {
         let rowTags: [String]
         @Binding var selectedTags: [String]
@@ -393,6 +402,13 @@ struct RecruitView: View {
                 selectedTags = [tag]
             }
         }
+    }
+    
+    // MARK: キーボードを閉じる
+    // 既存のstruct RecruitViewの定義内に、キーボードを閉じるためのメソッド
+    private func endEditing() {
+        // 処理の意図: キーボードを非表示にするために、現在のファーストレスポンダを解除する
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
 }
