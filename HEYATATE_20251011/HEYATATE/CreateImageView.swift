@@ -19,6 +19,8 @@ struct CreateImageView: View {
     private let titleColor: Color = .orange
     // 見出しの統一フォント
     private let headFont: Font = .system(size: 12)
+    // 見出し統一カラー
+    private let headColor: Color = .black
     // 内容の統一フォント
     private let innerFont: Font = .system(size: 20).bold()
     // 内容の統一カラー
@@ -85,7 +87,8 @@ struct CreateImageView: View {
                 .font(.largeTitle)
                 .minimumScaleFactor(0.01)
                 .padding([.top], headPadding) // 内容用余白(上)
-                .font(innerFont) // 見出し用フォント
+                .font(innerFont) // 内容フォント
+                .foregroundColor(headColor) // 見出し用カラー
                 .shadow(color: titleColor, // 影の色
                                 radius: 5, // 太さ
                                 x: 0,
@@ -103,11 +106,13 @@ struct CreateImageView: View {
                 .frame(
                     maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .font(headFont) // 見出し用フォント
+                .foregroundColor(headColor) // 見出し用カラー
             // 開始〜終了
             HStack(spacing: 2) {
                 Text(recruitData.startDate, style: .time)
                     .foregroundColor(innerColor) // 内容文字色
                 Text("~")
+                    .foregroundColor(headColor) // 見出し用カラー
                 Text(recruitData.endDate, style: .time)
                     .foregroundColor(innerColor) // 内容文字色
             }
@@ -125,6 +130,7 @@ struct CreateImageView: View {
             Text("募集人数").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .font(headFont) // 見出し用フォント
+                .foregroundColor(headColor) // 見出し用カラー
             // 募集人数
             Text("@" + "\(recruitData.people)")
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
@@ -143,6 +149,7 @@ struct CreateImageView: View {
             Text("ボイスチャット").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .font(headFont) // 見出し用フォント
+                .foregroundColor(headColor) // 見出し用カラー
             // VC
             Text(recruitData.vcs.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
@@ -161,6 +168,7 @@ struct CreateImageView: View {
             Text("実施場所").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .font(headFont) // 見出し用フォント
+                .foregroundColor(headColor) // 見出し用カラー
             // 実施場所
             Text(recruitData.areas.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
@@ -179,6 +187,7 @@ struct CreateImageView: View {
             Text("連絡方法").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .font(headFont) // 見出し用フォント
+                .foregroundColor(headColor) // 見出し用カラー
             // 連絡方法
             Text(recruitData.joins.joined(separator: ", "))
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
@@ -195,6 +204,7 @@ struct CreateImageView: View {
             Text("現在レート").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .font(headFont) // 見出し用フォント
+                .foregroundColor(headColor) // 見出し用カラー
             Text("\(recruitData.nowRank)" + "\(recruitData.nowRate)")
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
                 .padding([.top], headPadding) // 内容用余白(上)
@@ -213,6 +223,7 @@ struct CreateImageView: View {
             Text("募集レート").padding(paddingPx)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // 左上
                 .font(headFont) // 見出し用フォント
+                .foregroundColor(headColor) // 見出し用カラー
             // 現在レート
             Text("\(recruitData.reqRank)" + "\(recruitData.reqRate)" + "~")
                 .frame(maxWidth: .infinity, maxHeight: .infinity) // 中央
