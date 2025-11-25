@@ -21,7 +21,9 @@ struct feedView: View {
         NavigationView {
             List {
                 // 投稿リストをループして表示
-                ForEach(postManager.posts, id: \.title) { post in
+                ForEach(postManager.posts.indices, id: \.self) { index in
+                    let post = postManager.posts[index] // 投稿データを取得
+                
                     VStack(alignment: .leading, spacing: 10) {
                         // 投稿情報の概要表示
                         postSummarySection(post: post)
@@ -39,6 +41,17 @@ struct feedView: View {
                         // タップ時にヘヤタテタブへ切り替え (タグ0)
                         tabManager.selectedTab = 0
                     }
+                    
+                    // 👈改修箇所: 投稿2件ごとにBannerAdViewを挿入するロジックに変更
+                    // (index + 1) は1から始まる投稿の表示順
+                    // 表示順が3で割って2余る場合 (2, 5, 8, ...) に広告を挿入
+                    if (index + 1) % 3 == 2 {
+                        BannerAdView()
+                        // BannerAdView.getHeight() は50.0pt
+                            .frame(height: BannerAdView.getHeight()) // 広告の高さを設定
+                            .listRowInsets(EdgeInsets()) // Listのデフォルトのインセットを削除してフルワイド表示にする
+                    }
+                    
                 }
                 // 投稿がない場合のメッセージ
                 if postManager.posts.isEmpty {

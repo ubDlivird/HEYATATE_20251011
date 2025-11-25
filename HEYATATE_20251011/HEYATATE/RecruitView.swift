@@ -63,6 +63,8 @@ struct RecruitView: View {
     // MARK: メイン
     var body: some View {
         VStack{
+            BannerAdView() // 広告
+                .frame(height: BannerAdView.getHeight()) // 広告の高さを50.0ptに設定
             Text("プレビュー")
             ImageView() // プレビュー
             Text("募集事項")
